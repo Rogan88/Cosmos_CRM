@@ -4,3 +4,6 @@ bin
 .vs/BarcodeTracker/v15/Server/sqlite3/db.lock
 .vs/BarcodeTracker/v15/Server/sqlite3/storage.ide
 .vs/BarcodeTracker/v15/.suo
+BarcodeTrackerWEB/BarcodeTracker.WEB.csproj.user
+BarcodeTrackerWEB/ClassDiagram1.cd
+BarcodeTrackerWEB/ClassDiagram2.cd
