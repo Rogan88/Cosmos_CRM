@@ -26,7 +26,7 @@ namespace BarcodeTrackerWEB.Controllers
         {
             using (MainContext db = new MainContext())
             {
-                return View(db.Orders.ToList());
+                return View(db.Orders.ToList());//
             }
         }
 
