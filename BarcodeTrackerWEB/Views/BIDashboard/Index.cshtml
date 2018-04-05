@@ -1,0 +1,245 @@
+﻿@model BarcodeTrackerWEB.ViewModels.BIDashboardVM
+
+<h2>BI Dashboard</h2>
+
+@{
+
+    var i = 1;
+    var dpsList = new string[] { };
+    
+
+
+}
+<style>
+    body {
+        background-image: url(/Content/images/wallhaven-24280.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    span h2 {
+        color: #d5d5d5;
+    }
+
+
+    p {
+        color: lightsteelblue;
+    }
+</style>
+
+<!DOCTYPE html>
+
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BI Dashboard</title>
+
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    
+</head>
+<body>
+
+    <div id="topCustomers" class="col-lg-4" style="background-color: green;">
+
+
+       
+        
+@foreach (var item in Model.customerList)
+{
+   
+    
+    
+    <p>@i :  @item.Name</p><br />
+    i++;
+}
+        
+    </div>
+
+    <div id="highestOrders" class="col-lg-6" style="background-color: green;">
+
+        <h4>Largest Order Amount</h4>
+        <ul>
+            @foreach (var item in Model.ordersLists)
+            {
+                <li>OrderId : @item.OrderId OrderValue = R @item.TotalAmount   |   @Html.ActionLink("View Details", "Details", new { orderId = item.OrderId })</li>
+            }
+        </ul>
+        
+
+    </div>
+    <select id="ddlyear">
+        <option>2010</option>
+        <option>2011</option>
+        <option>2012</option>
+        <option>2013</option>
+        <option>2014</option>
+        <option selected="selected">2015</option>
+    </select>
+    <button id="btnCreatePieChart">Create Pie chart</button>
+
+    <div id="topGraphs" style="padding-top:20px; height: 25%; background-color: grey;">
+
+
+
+        <div class="myPie-chart" style="width: 50%; height: 40%;">
+            <script>
+                var data = {
+                    labels: ['Bananas', 'Apples', 'Grapes'],
+                    series: [20, 15, 40]
+                };
+
+                var options = {
+                    labelInterpolationFnc: function (value) {
+                        return value[0]
+                    }
+                };
+
+                var responsiveOptions = [
+                  ['screen and (min-width: 320px)', {
+                      chartPadding: 30,
+                      labelOffset: 100,
+                      labelDirection: 'explode',
+                      labelInterpolationFnc: function (value) {
+                          return value;
+                      }
+                  }],
+                  ['screen and (min-width: 800px)', {
+                      labelOffset: 80,
+                      chartPadding: 20
+                  }]
+                ];
+
+                new Chartist.Pie('.myPie-chart', data, options, responsiveOptions);
+            </script>
+
+        </div>
+
+        <div class="myPie-chart2" style="width: 50%; height: 40%;">
+            <script>
+                var data = {
+                    labels: ['Bananas', 'Apples', 'Grapes'],
+                    series: [20, 15, 40]
+                };
+
+                var options = {
+                    labelInterpolationFnc: function (value) {
+                        return value[0]
+                    }
+                };
+
+                var responsiveOptions = [
+                  ['screen and (min-width: 320px)', {
+                      chartPadding: 30,
+                      labelOffset: 100,
+                      labelDirection: 'explode',
+                      labelInterpolationFnc: function (value) {
+                          return value;
+                      }
+                  }],
+                  ['screen and (min-width: 800px)', {
+                      labelOffset: 80,
+                      chartPadding: 20
+                  }]
+                ];
+
+                new Chartist.Pie('.myPie-chart2', data, options, responsiveOptions);
+            </script>
+
+        </div>
+    </div>
+</body>
+
+
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/uds/api/visualization/1.0/40ff64b1d9d6b3213524485974f36cc0/format+en,default+en,ui+en,corechart+en.I.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+        //Global Variable
+        google.load("visualization", "1", { packages: ["corechart"] });
+        $(document).ready(function () {
+
+
+
+            //View Details Button
+            $(".viewDetails").click(function () {
+                $(".modal-body").html('');
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetDetails", "Dashboard")',
+                    data: { type: $(this).attr("data-type") },
+                    success: function (response) {
+                        $(".modal-body").html(response);
+                        $("#exampleModal").modal('show');
+                    },
+                    error: function () {
+                        alert("Something wrong");
+                    }
+                });
+            });
+            //Panel Body
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("TopCustomers", "Dashboard")',
+                success: function (response) {
+                    $(".topCustomer").html(response);
+                },
+                error: function () {
+                    alert("Something Wrong");
+                }
+            });
+
+            //Chart Orders By Country
+            OrdersByCountry()
+
+            //Chart Customer By Country
+            CustomersByCountry()
+
+            //Chart Orders By Customer
+            OrdersByCustomer()
+
+            //Get All Customers
+            CustomerList()
+            //function  Orders By Country
+            function OrdersByCountry() {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("OrdersByCountry", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+
+                        var data = new google.visualization.DataTable();
+
+                        data.addColumn('string', 'Country');
+                        data.addColumn('number', 'CountOrders');
+
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].Country, response.result[i].CountOrders]);
+                        }
+
+
+                        var chart = new google.visualization.ColumnChart(document.getElementById('orderByCountry'));
+
+                        chart.draw(data,
+                          {
+                              title: "",
+                              position: "top",
+                              fontsize: "14px",
+                              chartArea: { width: '100%' },
+                          });
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+            }
+        });
+        </script>

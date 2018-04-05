@@ -1,0 +1,184 @@
+﻿@model BarcodeTrackerWEB.ViewModels.CustomerProfileVM
+
+@{
+    ViewBag.Title = "CustomerProfile";
+}
+
+@{
+    var sid = Request.Url.Segments.Last();
+    //int.Parse
+    int id = int.Parse(sid);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>C-Profile</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+        .row.content {
+            height: 550px;
+        }
+        
+        /* Set gray background color and 100% height */
+        .sidenav {
+            background-color: #f1f1f1;
+            height: 100%;
+        }
+
+        body {
+            /*background-image: url(/Content/images/body-black.jpg);*/
+            background-repeat: space;
+            background-size: cover;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/Content/images/body-black.jpg);
+            background: linear-gradient( rgba(0, 0, 0, 0.5));
+        }
+
+        .jumbotron {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        p {
+            color: #000000;
+        }
+
+        #geomap {
+            background-color: #ffffff;
+        }
+
+        #detailsLink a {
+            color: #ff6a00;
+        }
+
+        td {
+            color: #000000;
+        }
+    </style>
+
+    <style>
+
+    </style>
+</head>
+<body>
+    
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-3 sidenav hidden-xs">
+
+                <div class="well">
+                    <h2>@Model.CustomerVM.Name</h2>
+                    @{
+                        if (Model.CustomerVM.Logo != null)
+                        {
+                            string imageBase64 = Convert.ToBase64String(Model.CustomerVM.Logo);
+                            string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
+                            <img src="@imageSrc" class="img-rounded" style="width:100%; height:180px;" />
+                        }
+
+                    }
+
+                </div>
+
+                <a href="/Customer/UploadLogo/@Model.CustomerVM.CustomerId" class="btn btn-default" style="width:100%;">Upload Logo</a><br /><br />
+
+
+
+
+
+
+
+
+
+
+                <div class="well">
+
+                    <table>
+                        <tr>
+                            @for (int i = 0; i < Model.rating; i++)
+                            {
+                                <td>⭐</td>
+                            }
+
+                        </tr>
+                    </table>
+                    <h4>Rating (@Model.rating / 5)</h4>
+                </div>
+
+                <a href="/Customer/Edit/@Model.CustomerVM.CustomerId" class="btn btn-warning" name="editBtn" style="width: 50%;">Edit &raquo;</a><br /><br />
+
+
+
+
+
+
+
+            </div>
+            <br>
+
+            <div class="col-sm-9">
+                <div class="well">
+                    <h4>Details:</h4>
+
+                    <p>Customer ID:   @Model.CustomerVM.CustomerId</p>
+                    <p>Province:   @Model.CustomerVM.Province</p>
+                    <p>Phone:   @Model.CustomerVM.Phone</p>
+                    <p>Email:  <a href="mailto:@Model.CustomerVM.Email">@Model.CustomerVM.Email</a></p>
+                    <p>Address: @Model.CustomerVM.Address</p>
+                    <p>Billing Address: @Model.CustomerVM.BillingAddress</p>
+                </div>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="well">
+                            <h4>Recent Activity</h4>
+
+                            <div>
+                                <table class="table table-bordered table-responsive table-hover" id="recentActivityTable">
+
+                                    <tr>
+                                        <th>OrderId</th>
+                                        <th>Total Amount</th>
+                                        <th>More...</th>
+                                    </tr>
+                                    <tbody id="activityRows"></tbody>
+                                    @foreach (var item in Model.recentActivity)
+                                    {
+                                        <tr>
+                                            <td>@item.OrderId</td>
+                                            <td>R @item.OrderTotal</td>
+                                            <td id="detailsLink">@Html.ActionLink("Details", "fillInOrderDetails", "Orders", new { orderId = item.OrderId }, null) </td>
+
+                                        </tr>
+
+
+                                    }
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+</body>
+</html>

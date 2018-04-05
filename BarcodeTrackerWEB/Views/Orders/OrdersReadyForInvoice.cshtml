@@ -1,0 +1,75 @@
+﻿@model BarcodeTrackerWEB.Models.Order
+@{
+
+    ViewBag.Title = "Ready For Invoice";
+}
+        
+
+@{
+    Layout = ViewBag.Layout;
+}
+<style>
+    body {
+        background-image: url(/Content/images/body-black.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+
+    td {
+        color: #000000;
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+</style>
+<div class="jumbotron">
+    <h2>Orders Ready for Invoice</h2>
+</div>
+<div style="width:90%; margin: 0 auto;">
+    <table id="myDataTable" class="table-bordered">
+        <thead>
+            <tr style="color: #808080">
+                <th>Customer</th>
+                <th>Sales Rep</th>
+                <th>Order Date</th>
+                <th>PO Number</th>
+                <th>Total</th>
+                <th>Status</th>
+                @*<th class="text-primary">Edit</th>
+                <th class="text-danger">Delete</th>*@
+                <th class="text-info">Details</th>
+                <th>Purchase Order</th>
+                @*<th>Label Proof   </th>*@
+                <th>Completed</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+@* Load datatable.css*@
+<link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+@*Load datatable.js*@
+
+
+@section Scripts{
+
+
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $('#myDataTable').dataTable({
+                bProcessing: true,
+                sAjaxSource: '@Url.Action("getReadyForInvoiceData", "Orders")',
+            "decimalPlaces":2,
+            });
+        });
+    </script>
+
+}

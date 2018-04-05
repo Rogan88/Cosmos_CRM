@@ -1,0 +1,67 @@
+﻿@model IEnumerable<BarcodeTrackerWEB.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    body {
+         background-image: url(/Content/images/body-black.jpg);
+        background-repeat: round;
+    }
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5); 
+    }
+</style>
+<head>
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
+
+    <link href="~/Content/Animation/component.css" rel="stylesheet" />
+
+    <link href="~/Content/Animation/demo.css" rel="stylesheet" />
+    <link href="~/Content/Animation/normalize.css" rel="stylesheet" />
+</head>
+
+
+
+<div class="jumbotron" >
+    <h1>Manage your Products & Services</h1>
+    <p class="lead">Store information about your products or services</p>
+    <p><a href="/Products/CreateNewProduct" class="btn btn-success btn-lg">Create New Products &raquo;</a></p>
+
+</div>
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitPrice)
+        </th>
+        <th>Options</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td class="text-success">
+            @Html.DisplayFor(modelItem => item.ProductId)
+        </td>
+        <td class="text-success">
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td class="text-warning">
+            @Html.DisplayFor(modelItem => item.UnitPrice)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }) | 
+            @Html.ActionLink("Details", "Details", new { id=item.ProductId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ProductId })
+        </td>
+    </tr>
+}
+
+</table>

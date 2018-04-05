@@ -1,0 +1,88 @@
+﻿@model IEnumerable<BarcodeTrackerWEB.Models.SalesRep>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Sales Reps</h2>
+
+<style>
+    body {
+        background-image: url(/Content/images/body-black.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+
+    #userTable {
+        color: #fff;
+        text-align: left;
+    }
+    #btnAddRep a {
+        color: #fff;
+    }
+    td {
+        color: #fff;
+        text-align: left;
+    }
+
+    th {
+        color: #0094ff;
+        text-decoration: underline;
+    }
+
+    h2 {
+        text-align: center;
+    }
+</style>
+
+<br />
+<div class="jumbotron">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.phone)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.phone)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.SalesRepId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.SalesRepId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.SalesRepId })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <br />
+    <h5 id="btnAddRep" class="btn btn-primary" style="float: right; color: #fff;">@Html.ActionLink("+ Add Sales Rep", "Create")</h5>
+</div>

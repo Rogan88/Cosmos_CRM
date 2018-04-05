@@ -1,0 +1,48 @@
+﻿@model BarcodeTrackerWEB.Models.Order
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<style>
+    body {
+        background-image: url(/Content/images/body-black.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+
+    .customIcon {
+        width: 50px;
+        height: 50px;
+        position: center;
+        background-size: contain;
+    }
+</style>
+
+<div class="jumbotron">
+    <h1>Manage Orders</h1>
+    <p class="lead">Create & View information about orders</p>
+
+    <div id="listGroup" class="list-group-item-warning" style="width: 25%;">
+
+        <a href="/Orders/Create" class="list-group-item">
+            <img class="customIcon" src="~/Content/images/CreateOrderIcon.png" />
+            <p class="text-warning">Create Order &raquo;</p>
+        </a>
+        <a href="/Orders/ShowAllOrders" class="list-group-item">
+
+            <img class="customIcon" src="~/Content/images/OrdersRed_Thumbnail.png" />
+            <p>View Orders &raquo;</p>
+
+        </a>
+    </div>
+</div>
+
+

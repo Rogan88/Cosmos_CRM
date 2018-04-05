@@ -1,0 +1,50 @@
+﻿@model IEnumerable<BarcodeTrackerWEB.ViewModels.TopCustomerViewModel>
+
+<div class="list-group">
+
+    @foreach (var customer in Model)
+    {
+        <a href="#" class="list-group-item">
+            
+            <div>
+                <h6>@customer.CustomerName</h6>
+
+            </div>
+            <div>
+                @{
+                    try
+                    {
+                        if (customer.Logo != null)
+                        {
+                            string imageBase64 = Convert.ToBase64String(customer.Logo);
+                            string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
+
+                            <div style="display: inline-block;width: 90px;">
+                                <img class="rounded img-thumbnail" src="@imageSrc" alt="" style="width:60px; height:60px; position: center; background-size: contain" />
+
+                            </div>
+                            
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+
+
+                }
+            </div>
+            
+            <div>
+                <h5><span class="label label-primary"> @string.Format("{0} : {1}", "Order Count", customer.CountOrder) </span></h5>
+                <h5><span class="label label-warning"> @string.Format("{0} : {1}", "Total Value", "R " + customer.TotalValue) </span></h5>
+            </div>
+            
+            
+
+        </a>
+    }
+
+</div>
+  

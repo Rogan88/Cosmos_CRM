@@ -1,0 +1,93 @@
+﻿@model BarcodeTrackerWEB.Models.UserAccount
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@*CSS for animations*@
+<link href="~/Content/font-awesome.css" rel="stylesheet" />
+
+<link href="~/Content/Animation/component.css" rel="stylesheet" />
+
+<link href="~/Content/Animation/demo.css" rel="stylesheet" />
+<link href="~/Content/Animation/normalize.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-image: url(/Content/images/barcode.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    span h2 {
+        color: #d5d5d5;
+    }
+
+    p {
+        color: lightsteelblue;
+    }
+
+    #loginWrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    #loginBtn {
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    #myModal{
+        background: rgba(0, 0, 0, 0.6);
+    }
+</style>
+<div class="jumbotron">
+
+</div>
+
+<div class="jumbotron">
+    <h1>Barcode Tracker</h1>
+    <p class="lead">An internal platform for Customer Managment and Business Intelligence</p>
+    <p>
+        COSMOS gives you a powerful platform to process and manage customer orders, sales and products.
+        Get Statered with creating your data structures: <B><a href="/Products">Products/Services</a></B>, and manage your <B><a href="SalesReps">Sales Personel</a></B>
+    </p>
+    <div id="loginWrapper">
+        @*<a href="/Account/Login" id="loginBtn" class="btn btn-success btn-lg">Login &raquo;</a>*@
+        <button type="button" id="vModal" class="btn btn-success btn-lg">Login or Register</button>
+
+
+    </div>
+</div>
+<script>
+
+
+    $("#vModal").click(function () {
+        $("#myModal").modal("show");
+    });
+</script>
+@*<div class="row">
+   
+
+    <div class="col-md-4">
+
+       
+
+    </div>
+    <div class="cl-effect-21 col-md-4">
+       
+        <h2><button type="button" href="#" id="vModal" data-hover="Getting Started"><span>Register/Login</span></button></h2>
+        <p>
+            Login or Register an Account
+        </p>
+    </div>  
+    <div class="cl-effect-21 col-md-4">
+        
+    </div>
+
+    
+</div>*@

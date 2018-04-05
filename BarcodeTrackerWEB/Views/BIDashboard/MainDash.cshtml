@@ -1,0 +1,929 @@
+﻿@model BarcodeTrackerWEB.ViewModels.BIDashboardVM
+
+@{
+    Layout = ViewBag.Layout;
+}
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+<style>
+    svg > g > g:last-child {
+        pointer-events: none;
+    }
+
+    .container body-content {
+        margin: 0px, 0px, 0px, 0px !important;
+    }
+
+    #orderProgress td {
+        color: #ffffff;
+    }
+
+    #orderProgress {
+        color: #00ffff;
+    }
+
+    #page-wrapper {
+        width: 90%;
+    }
+
+    body {
+        background-image: url(/Content/images/White.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .modal-dialog {
+        position: absolute;
+        top: 50% !important;
+        transform: translate(0, -50%) !important;
+        -ms-transform: translate(0, -50%) !important;
+        -webkit-transform: translate(0, -50%) !important;
+        margin: auto 5%;
+        width: 90%;
+        height: 80%;
+    }
+
+    .modal-content {
+        min-height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .modal-body {
+        position: absolute;
+        top: 45px;
+        // height of header bottom:45px;
+        // height of footer left:0;
+        right: 0;
+        overflow-y: auto;
+    }
+
+    .modal-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+</style>
+
+<link href="~/Scripts/font-awesome.css" rel="stylesheet" />
+@*<div id="chart_div" style=" width: 900px; height: 500px;"></div>*@
+<script type="text/javascript">
+
+
+    $('img').addClass('rounded img-thumbnail');
+
+</script>
+@{
+    ViewBag.Title = "MainDash";
+}
+<!-- Trigger the modal with a button -->
+<br />
+<br />
+
+<script>
+
+
+    $("#vModal").click(function () {
+        $("#myModal").modal("show");
+    });
+</script>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Map Data</h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="page-wrapper">
+    <div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="page-header">
+                
+                <div style="color: #141414;background-image: url(/Content/images/BI.png); background-size: contain; background-repeat:no-repeat; width: 400px; height: 200px; float: right">
+                    
+                </div>
+                <h1 style="color: #141414;">Dashboard</h1>
+                <p>Company Data Analytics</p>
+            </div>
+            
+            
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-4 col-md-6" id="PieChart1">
+            @*<div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-comments fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" id="CountCustomers">
+                                    <span>
+                                        @if (ViewBag.CountCustomers != null)
+                                        {
+                                            @ViewBag.CountCustomers;
+                                        }
+                                    </span>
+
+                                </div>
+                                <div>Top Performing Customers</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="viewDetails" data-type="customers">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>*@
+        </div>
+        <div class="col-lg-4 col-md-6" id="PieChart2">
+
+        </div>
+        <div class="col-lg-4 col-md-6" id="LineChart3">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-4" id="TopSalesReps" style="float: left;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-comments fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="CountCustomers">
+                                <span>
+                                    @if (ViewBag.CountCustomers != null)
+                                    {
+                                        @ViewBag.CountCustomers;
+                                    }
+                                </span>
+
+                            </div>
+                            @*<div>Top Performing Customers</div>*@
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="viewDetails" data-type="customers">
+                    <div class="panel-footer">
+                        <span class="pull-left">View Details</span>
+                        <span class="pull-right"></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4" id="TopSalesRepsByOrderValue">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-tasks fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge" id="CountOrders">
+                                <span>
+                                    @if (ViewBag.CountOrders != null)
+                                    {
+                                        @ViewBag.CountOrders;
+                                    }
+                                </span>
+                            </div>
+                            @*<div class="TopProducts">Products</div>*@
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4">
+
+            <div id="chart_div">
+
+                @{
+                    decimal TotalSales = 0;
+                    foreach (var item in Model.allOrderList)
+                    {
+                        TotalSales += (item.TotalAmount * 115 / 100);
+                    }
+                    <br /><br />                    <br /><br />
+                    <h5 style="color: #000000; float: left">Total Sales Revenue: </h5>
+                    <span class="btn btn-default btn-lg" style="float: right;color: #cfffd6">R @TotalSales.ToString("0,000.00")</span>
+                    <br /><br /><br /><br />
+                    <h5 style="color: #000000; clear: both; float: left;">Total Order Count: </h5>                    
+                    <span class="btn btn-default btn-lg" style="float: right;color: #ffc6a7">@Model.allOrderList.Count().ToString()</span>
+                    <br /><br /><br /><br />
+                    <h5 style="color: #000000; clear: both; float: left;">Total Customers </h5>
+                    <span class="btn btn-default btn-lg" style="float: right; color: #ffb839">@Model.numberOfCustomers.ToString()</span>
+
+
+
+                }
+
+</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+
+                        </div>
+                        <div class="col-xs-12 text-right">
+                            <div class="huge" id="CountProducts">
+                                <span>
+                                    @if (ViewBag.CountProducts != null)
+                                    {
+                                        @ViewBag.CountProducts;
+                                    }
+                                </span>
+                            </div>
+                            <div style="text-align: center;">TOP CUSOMTERS</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="topCustomer">
+
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    ORDERS / SALES GEODATA 🌍
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+
+                </div>
+                <!-- /.panel-body -->
+                <div id="mapChart" style="width: 100%; height: 100%;">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    ORDERS IN PROGRESS
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table id="orderProgress" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>OrderId</th>
+                                <th>Customer Name</th>
+                                <th>Customer Province</th>
+                                <th>Order Value</th>
+                                <th>Sales Rep</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">
+                                <span>
+                                    @if (ViewBag.CountOrders != null)
+                                    {
+                                        @ViewBag.CountOrders;
+                                    }
+                                </span>
+                            </div>
+                            <div style="text-align: left;">PRODUCTS BY ORDER</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="productList">
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+<!-- JS -->
+@section Scripts{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/uds/api/visualization/1.0/40ff64b1d9d6b3213524485974f36cc0/format+en,default+en,ui+en,corechart+en.I.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    @*<script type='text/javascript'>
+        google.charts.load('current', {
+          'packages': ['geochart'],
+          // Note: you will need to get a mapsApiKey for your project.
+          // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+          'mapsApiKey': 'AIzaSyDSsQLXeMhsjOrWoMZjUgzMjLotw2PnL9w'
+        });
+        google.charts.setOnLoadCallback(drawMarkersMap);*@
+
+
+    <script>
+
+        ////Global Variable
+        google.load("visualization", "1", { packages: ["corechart"], 'mapsApiKey': 'AIzaSyD-SsQLXeMhsjOrWoMZ-jUgzMjLotw2PnL9w' });
+        $(document).ready(function () {
+
+            function OrdersByCustomer() {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("OrdersByCustomer", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Name');
+                        data.addColumn('number', 'CountOrders');
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].Name[0], response.result[i].CountOrders]);
+                        }
+                        var chart = new google.visualization.PieChart(document.getElementById('PieChart1'));
+
+                        chart.draw(data,
+                          {
+                              title: "Customer Spread",
+                              backgroundColor: 'transparent',
+                              position: "top",
+                              fontsize: "16px",
+                              chartArea: { width: '100%' },
+                              width: 420,
+                              height: 400,
+                              is3D: true,
+
+                          });
+
+                        //alert("Success to Draw GRaph_")
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+            }
+
+
+            //View Details Button
+            $(".viewDetails").click(function () {
+                $(".modal-body").html('');
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetDetails", "BIDashBoard")',
+                    data: { type: $(this).attr("data-type") },
+                    success: function (response) {
+                        $(".modal-body").html(response);
+                        $("#exampleModal").modal('show');
+                    },
+                    error: function () {
+                        alert("Something wrong");
+                    }
+                });
+            });
+            //Panel Body
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("TopCustomers", "BIDashboard")',
+                success: function (response) {
+                    $(".topCustomer").html(response);
+                },
+                error: function () {
+                    alert("Something Wrong");
+                }
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("BestSellingProduct", "BIDashboard")',
+                success: function (response) {
+                    $("#productList").html(response);
+                },
+                error: function () {
+                    alert("Something Wrong! :`( ");
+                }
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("CustomerOrders", "BIDashboard")',
+                success: function (response) {
+                    $(".customerOrders").html(response);
+                },
+                error: function () {
+                    alert("Something Wrong");
+                }
+            });
+
+            //Order Progress Table
+            function OrderProg() {
+
+
+                $('#orderProgress').dataTable({
+                    bProcessing: true,
+                    sAjaxSource: '@Url.Action("GetOrdersInProgress", "BIDashboard")',
+                    "decimalPlaces": 2,
+                });
+            }
+
+
+            function OrderInProvince() {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("OrdersByProvince", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+
+                        var data = new google.visualization.DataTable();
+
+                        data.addColumn('string', 'Country');
+                        data.addColumn('number', 'CountOrders');
+
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].Country, response.result[i].CountOrders]);
+                        }
+
+
+                        var chart = new google.visualization.PieChart(document.getElementById('LineChart3'));
+
+                        chart.draw(data,
+                          {
+                              title: "Number of Orders per Province",
+                              position: "top",
+                              fontsize: "14px",
+                              chartArea: { width: '100%' },
+                              width: 420,
+                              height: 400,
+                              //is3D: true,
+                              pieHole: 0.4
+
+                          });
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+
+            }
+
+            @*function OrderByDateLine() {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("OrdersByDate", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+
+                        var data = new google.visualization.DataTable();
+
+                        data.addColumn('string', 'Month');
+                        data.addColumn('number', 'CountOrders');
+
+                        for (var i = 0; i < response.result.length; i++) {
+
+
+                            data.addRow([response.result[i].Month, response.result[i].CountOrders]);
+                        }
+
+
+                        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+                        chart.draw(data,
+                          {
+                              title: "Orders Per Month",
+                              position: "top",
+                              fontsize: "14px",
+                              chartArea: { width: '100%' },
+                              width: 420,
+                              height: 400,
+                              //is3D: true,
+                              hAxis: {
+                                  format: 'MMMM',
+                                  ticks: dateTicks
+                              }
+
+                          });
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+
+            }*@
+            function OrderByDate() {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("OrdersByDate", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+
+                        var data = new google.visualization.DataTable();
+
+                        data.addColumn('string', 'Month');
+                        data.addColumn('number', 'CountOrders');
+
+                        for (var i = 0; i < response.result.length; i++) {
+
+
+                            data.addRow([response.result[i].Month, response.result[i].CountOrders]);
+                        }
+
+
+                        var chart = new google.visualization.PieChart(document.getElementById('LineChart23'));
+
+                        chart.draw(data,
+                          {
+                              title: "Orders Per Month",
+                              position: "top",
+                              fontsize: "14px",
+                              chartArea: { width: '100%' },
+                              width: 420,
+                              height: 400,
+                              //is3D: true,
+                              hAxis: {
+                                  format: 'MMMM',
+                                  ticks: dateTicks
+                              }
+
+                          });
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+
+            }
+
+
+
+
+            function BestSellingProcuts() {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("ProductByOrders", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'pName');
+                        data.addColumn('number', 'CountOrders');
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].pName[0], response.result[i].CountOrders]);
+                        }
+                        var chart = new google.visualization.PieChart(document.getElementById('PieChart2'));
+
+                        chart.draw(data,
+                          {
+                              title: "Product Activity",
+                              backgroundColor: 'transparent',
+                              position: "top",
+                              fontsize: "16px",
+                              chartArea: { width: '100%' },
+                              height: 400,
+                              width: 420,
+                              is3D: true,
+
+                          });
+
+                        //alert("Success to Draw GRaph_2")
+                    },
+                    error: function () {
+                        alert("Error loading data! Pie 2");
+                    }
+                });
+            }
+
+            function OrdersBySalesRep() {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("OrdersBySalesRep", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'srName');
+                        data.addColumn('number', 'CountOrders');
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].srName[0], response.result[i].CountOrders]);
+                        }
+
+                        var chart = new google.visualization.BarChart(document.getElementById('TopSalesReps'));
+
+                        chart.draw(data,
+                          {
+                              title: "Top Sales Reps",
+                              backgroundColor: 'transparent',
+                              position: "top",
+                              fontsize: "16px",
+                              chartArea: { width: '100%' },
+                              width: 420,
+                              height: 400,
+                              is3D: true,
+
+                          });
+
+                        //alert("Success to Draw GRaph_")
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+            }
+            function ValueBySalesRep() {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("ValueBySalesRep", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'srName');
+                        data.addColumn('number', 'SumTotal');
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].srName[0], response.result[i].SumTotal]);
+                        }
+                        var chart = new google.visualization.BarChart(document.getElementById('TopSalesRepsByOrderValue'));
+
+                        chart.draw(data,
+                          {
+                              title: "Top Sales Reps by Order Value",
+                              backgroundColor: 'transparent',
+                              position: "top",
+                              fontsize: "16px",
+                              chartArea: { width: '100%' },
+                              width: 420,
+                              height: 400,
+                              is3D: true,
+
+                          });
+
+                        //alert("Success to Draw GRaph_")
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+            }
+
+            //--Call these functions to load data into graphical BI Dashboard --
+
+            //PieChart1
+            OrdersByCustomer()
+
+
+            BestSellingProcuts()
+            //Chart Orders By Customer
+            ValueBySalesRep()
+
+            OrderInProvince()
+
+            OrdersBySalesRep()
+
+            OrderByDate()
+            OrderProg()
+            OrdersInProgress()
+
+            drawRegionsMap()
+
+            drawTitleSubtitle()
+            ////Get All Customers
+            //CustomerList()
+            //function  Orders By Country
+            @*function OrdersByCountry() {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("OrdersByProvince", "BIDashboard")',
+                    success: function (response) {
+                        console.log(response);
+
+                        var data = new google.visualization.DataTable();
+
+                        data.addColumn('string', 'Country');
+                        data.addColumn('number', 'CountOrders');
+
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].Country, response.result[i].CountOrders]);
+                        }
+
+
+                        var chart = new google.visualization.PieChart(document.getElementById('orderByCountry'));
+
+                        chart.draw(data,
+                          {
+                              title: "",
+                              position: "top",
+                              fontsize: "14px",
+                              chartArea: { width: '100%' },
+                          });
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+
+            }
+
+            function CustomersByCountry() {
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("CustomersByCountry", "Dashboard")',
+                    success: function (response) {
+
+                        console.log(response);
+
+                        var data = new google.visualization.DataTable();
+
+                        data.addColumn('string', 'Country');
+                        data.addColumn('number', 'CountCustomer');
+
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.addRow([response.result[i].Country, response.result[i].CountCustomer]);
+                        }
+
+
+                        var chart = new google.visualization.PieChart(document.getElementById('customerByCountry'));
+
+                        chart.draw(data,
+                          {
+                              title: "",
+                              position: "top",
+                              fontsize: "14px",
+                              chartArea: { width: '100%' },
+                          });
+                    },
+                    error: function () {
+                        alert("Error loading data!");
+                    }
+                });
+
+            }
+            //function OrdersByCustomer() {*@
+
+            //function OrdersInProgress() {
+            //    //GET DATA FROM DATABASE TO FILL DATATABLE
+            //    var oTable = $(".panel #myDataTable").DataTable({
+
+            //        "ajax": {
+            //            "url": "/BIDashboard/GetOrdersInProgress",
+            //            "type": "GET",
+            //            "dataType": "json"
+            //        },
+
+            //        "columns": [
+            //        { "data": "OrderId", "autowidth": true },
+            //        { "data": "CustomerName", "autowidth": true },
+            //        { "data": "CustomerEmail", "autowidth": true },
+            //        { "data": "CustomerPhone", "autowidth": true },
+            //        { "data": "CustomerCountry", "autowidth": true },
+            //        {
+            //            "data": "ID", "width": "50px", "render": function (data) {
+
+            //                return '<a href=/Products/ProductList/' + data + ' class="btn btn-primary">Order</a>';
+            //                //return '<a href=/Products/ProductList/' + data + ' class="btn btn-primary"  data-id= ' + data + '>Order</a>';
+            //            }
+            //        }
+            //        ]
+            //    });
+            //}
+        });
+
+
+    </script>
+    <script>
+            
+
+        
+                $(document).ready(function () {
+                    //google.charts.load('current', {
+                    //    'packages': ['geochart'],
+                    //    // Note: you will need to get a mapsApiKey for your project.
+                    //    'mapsApiKey': 'AIzaSyD-SsQLXeMhsjOrWoMZ-jUgzMjLotw2PnL9w'
+
+                    //});
+                    function drawRegionsMap() {
+                        @*$.ajax({
+                            type: 'GET',
+                            url: '@Url.Action("GetOrdersInProvinceCode", "BIDashboard")',
+                            success: function (response) {
+                                console.log(response);
+                                var data = new google.visualization.DataTable();
+                                data.addColumn('string', 'Province');
+                                data.addColumn('number', 'CountOrders');
+                                for (var i = 0; i < response.result.length; i++) {
+                                    
+
+
+
+
+                                    data.addRow([repsonse.result[i].Province, response.result[i].CountOrders]);
+                                }
+
+                                //alert("Success to Draw GRaph_")
+                            },
+                            error: function () {
+                                alert("Error loading data!");
+                            }
+                        });*@
+                        var data = google.visualization.arrayToDataTable([
+        ['Province', 'CountOrders'],
+            ['ZA-EC', null],
+            ['ZA-FS', 1],
+            ['ZA-GT', 11],
+            ['ZA-NL', null],
+            ['ZA-LP', 1],
+            ['ZA-MP', null],
+            ['ZA-NC', null],
+            ['ZA-NW', null],
+            ['ZA-WC', 3]
+                        ]);
+
+                        var options = {
+
+                            region: 'ZA',
+                            resolution: 'provinces',
+                            defaultColor: '#ffffff',
+                            keepAspectRatio: false,
+                            colorAxis: {
+                                minValue: 0,
+                                maxValue: 20
+                            }
+
+                        };
+
+                        var chart = new google.visualization.GeoChart(document.getElementById('mapChart'));
+                        chart.draw(data, options);
+                    };
+                    drawRegionsMap()
+                });
+
+        
+        </script>
+    
+}

@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BI Dashboard</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+
+    <script>
+        //session end 
+        var sessionTimeoutWarning = @Session.Timeout -1;
+        var sTimeout = parseInt(sessionTimeoutWarning) * 60 * 1000;
+        setTimeout('SessionEnd()', sTimeout);
+
+        function SessionEnd() {
+            window.location.hostname = "";
+           @* $(window.Location).attr("href", "@Url.Content("~/Login/index/")");
+ *@
+            window.location = "/Account/Login/";
+        }
+</script>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+               
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("🌌 Cosmos - BI Dashboard", "Login", "Account", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">  
+                    <li>@Html.ActionLink("Home", "LoggedIn", "Account")</li>
+                    
+                    <li>@Html.ActionLink("Account", "Index", "Account")</li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Manage Data<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("👥 Customers", "Index", "Customer")</li>
+                            <li>@Html.ActionLink("📦 Orders", "Index", "Orders")</li>
+                            <li>@Html.ActionLink("🛍️ Products", "Index", "Products")</li>
+                            <li>@Html.ActionLink("🤵 Sales Reps", "Index", "SalesReps")</li>
+                            <li>@Html.ActionLink("💸 Ready for Invoice", "OrdersReadyForInvoice", "Orders")</li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("BIDashboard", "MainDash", "BIDashboard")</li>
+                    <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
+                </ul>
+            </div>
+            @if (Session["UserId"] != null)
+            {
+                <a href="/Account/Index" style="color: lawngreen; font-family:'Segoe UI'; display: inline-block; font-weight: bold">Logged in as: @Session["Username"].ToString()</a>
+            }
+        </div>
+    </div>
+    <div class="container body-content" style="width: 90%;">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - 🌠 Cosmos ☕</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

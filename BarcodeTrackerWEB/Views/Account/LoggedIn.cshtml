@@ -1,0 +1,126 @@
+﻿<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+@*CSS for animations*@
+<link href="~/Content/Animation/component.css" rel="stylesheet" />
+<link href="~/Content/Animation/demo.css" rel="stylesheet" />
+<link href="~/Content/Animation/normalize.css" rel="stylesheet" />
+@{
+    ViewBag.Title = "Welcome";
+}
+
+
+<style>
+    .rounded img-thumbnail:hover
+{
+    box-shadow: 0px 0px 150px #000000;
+    z-index: 2;
+    -webkit-transition: all 300ms ease-in;
+    -webkit-transform: scale(1.1);
+    -ms-transition: all 200ms ease-in;
+    -ms-transform: scale(1.5);   
+    -moz-transition: all 300ms ease-in;
+    -moz-transform: scale(1.1);
+    transition: all 300ms ease-in;
+    transform: scale(1.1);
+}
+    span h1 {
+        color: #ff0000;
+    }
+
+    
+    p {
+        color: lightsteelblue;
+    }
+
+    #loginWrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    #loginBtn {
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    body {
+        /*background-image: url(/Content/images/body-black.jpg);*/
+        background-repeat: space;
+        background-size: cover;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/Content/images/body-black.jpg);
+        background: linear-gradient( rgba(0, 0, 0, 0.5)); 
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .content-block {
+        height: 300px;
+    }
+
+    #imgClick a {
+        background: url(/Content/images/Customers_Thumbnail.jpg) no-repeat top left;
+        display: block;
+        width: 50%;
+        height: 100%;
+        text-indent: -9999px; 
+    }
+
+</style>
+
+@if (Session["UserId"] != null)
+{
+    <br />
+    <h2>Welcome @Session["Username"].ToString()</h2><br />
+    
+        <div class="cl-effect-21 col-md-6" id="customerPortal">
+            @*<img class="rounded img-thumbnail" src="~/Content/images/Customers_Thumbnail.jpg" alt="" style="width:60px; height:60px; position: center; background-size: contain" />*@
+            <h1><a href="/Customer/Index" data-hover="Manage Customers"><span><img class="rounded img-thumbnail" src="~/Content/images/Customers_Thumbnail.jpg" alt="" style="width:150px; height:150px; position: center; background-size: contain" />Customers</span></a></h1>
+            
+
+            <p>Keep track of your Customers and gain trend insights by creating and maintaining client profiles</p>
+
+        </div>
+        <div class="cl-effect-21 col-md-6" id="BIPortal">
+            <h1><a href="/BIDashboard/MainDash" data-hover="DASHBOARD"><span><img class="rounded img-thumbnail" src="~/Content/images/BizDash.jpg" alt="" style="width:150px; height:150px; position: center; background-size: contain" />Dashboard</span></a></h1>
+            <p>Attain Business Intelligence and Graph Analytics, visualize your business data and enhance decision making</p>
+        </div>
+
+        <div class="cl-effect-21 col-md-6" id="OrdersPortal">
+            <h1><a href="/Orders/showAllOrders" data-hover="Orders"><span><img class="rounded img-thumbnail" src="~/Content/images/Orders_Thumbnail.jpg" alt="" style="width:150px; height:150px; position: center; background-size: contain" />Orders</span></a></h1>
+            <p>
+                Create & Manage you client orders, 
+            </p>
+        </div>
+        <div class="cl-effect-21 col-md-6" id="ProductPortal">
+            <h1><a href="/Products/Index" data-hover="Manage Products"><span><img class="rounded img-thumbnail" src="~/Content/images/Products_Thumbnail.jpg" alt="" style="width:150px; height:150px; position: center; background-size: contain" />Products</span></a></h1>
+            <p>
+                Manage your products and services. Maintain pricing and product information.
+            </p>
+        </div>
+        <div class="cl-effect-21 col-md-6" id="StaffPortal">
+            <h1><a href="/SalesReps/Index" data-hover="Manage Products"><span><img class="rounded img-thumbnail" src="~/Content/images/Staff_Thumbnail.png" alt="" style="width:150px; height:150px; position: center; background-size: contain" />Sales Employees</span></a></h1>
+            <p>
+                Manage Employees and Departments. 
+            </p>
+        </div>
+        <div class="cl-effect-21 col-md-6" id="UserPortal">
+            <h1><a href="/Account/Index" data-hover="Users"><span><img class="rounded img-thumbnail" src="~/Content/images/Users_Thumbnail.jpg" alt="" style="width:150px; height:150px; position: center; background-size: contain" />System Users</span></a></h1>
+            <p>
+                View System Users.
+            </p>
+        </div>
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,136 @@
+﻿@model BarcodeTrackerWEB.Models.UserAccount
+
+@{
+    ViewBag.Title = "Login";
+}
+
+@{
+    Layout = ViewBag.Layout;
+}
+
+<style>
+    .form-horizontal {
+        position: center;
+        vertical-align: central;
+    }
+
+    body {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/Content/images/barcode.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+    .jumbotron {
+        margin-top: 150px;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+        .jumbotron h1 {
+            vertical-align: central;
+            text-align: center;
+        }
+
+    p {
+        text-align: center;
+        color: #b9c5df;
+    }
+
+    #loginWrapper {
+        text-align: center;
+    }
+
+    #vModal {
+        height: 80px;
+        width: 220px;
+    }
+</style>
+
+<div class="jumbotron">
+    <h1>Codex</h1>
+    <h1>👨‍💻</h1>
+    <h1> Barcode Tracker</h1>
+    
+    <p class="lead">An internal platform for Customer Managment and Business Intelligence</p>
+    <p>
+        Codex gives you a powerful platform to process and manage customer orders, sales and products. Keep track of customer information including barcode sequencing and current orders.
+        Get Statered with creating your data structures: <B><a href="/Products">Products/Services</a></B>, and manage your <B><a href="SalesReps">Sales Personel</a></B>
+    </p>
+    
+</div>
+
+<div id="loginWrapper" class="well-lg">
+    @*<a href="/Account/Login" id="loginBtn" class="btn btn-success btn-lg">Login &raquo;</a>*@
+    <button type="button" id="vModal" class="btn btn-primary btn-lg">Login or Register</button>
+
+</div>
+
+<script>
+    $("#vModal").click(function () {
+        $("#myModal").modal("show");
+    });
+</script>
+<!-- Trigger the modal with a button -->
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <i class="fa-battery-full"></i><h4 class="modal-title">Login / Register</h4>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+
+                        <hr />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @id = "passwd", @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Login" class="btn btn-success" />
+                                @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                {
+                                    <input id="btnSubmit" type="submit" value="Register" class="btn btn-warning" style="float:left; position:relative; margin-right: 140px;" onclick="location.href = '@Url.Action("Register","Account")';" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}
+

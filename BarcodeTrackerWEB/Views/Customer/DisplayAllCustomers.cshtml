@@ -1,0 +1,103 @@
+﻿@model IEnumerable<BarcodeTrackerWEB.Models.Customer>
+
+@{
+    ViewBag.Title = "DisplayAllCustomers";
+}
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+
+<style>
+    #myTable {
+        color: white;
+        text-align: left;
+    }
+
+    body {
+        background-image: url(/Content/images/body-black.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+</style>
+<div class="jumbotron">
+    <h2>All Customers</h2>
+
+    <p>
+        @Html.ActionLink("Add New Customers", "CreateCustomer")
+    </p>
+    <table class="table table-hover" id="myTable">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Province)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BillingAddress)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Province)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BillingAddress)
+                </td>
+                <td>
+                    <button class="btn btn-default">@Html.ActionLink("Edit", "Edit", new { id = item.CustomerId })</button>
+
+
+                </td>
+                <td>
+                    <button class="btn btn-danger">@Html.ActionLink("Delete", "Delete", new { id = item.CustomerId })</button>
+
+                </td>
+                <td>
+                    <button class="btn btn-warning">@Html.ActionLink("View Customer Profile", "CustomerProfile", new { id = item.CustomerId })</button>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+
+
+</script>
+

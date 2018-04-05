@@ -1,0 +1,23 @@
+﻿@model IEnumerable<BarcodeTrackerWEB.ViewModels.TopProductViewModel>
+
+<div class="list-group">
+
+    @foreach (var product in Model)
+    {
+        <a href="/Products/" class="list-group-item">
+
+
+
+            <h4><span class="label label-default">@product.ProductName</span></h4>
+            <h5><span class="label label-info"> @string.Format("{0} : {1}", "Order Count", product.CountOrder) </span></h5>
+            <h5><span class="label label-warning"> @string.Format("{0} : {1}", "Total Value", "R " + product.TotalSold) </span></h5>
+
+
+        </a>
+        
+            }
+
+</div>
+
+
+

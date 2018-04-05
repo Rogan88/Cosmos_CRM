@@ -1,0 +1,13 @@
+﻿@model BarcodeTrackerWEB.Models.Order
+
+<div>
+    @{
+        if (Model.PurchaseOrderDoc != null)
+        {
+            string imageBase64 = Convert.ToBase64String(Model.PurchaseOrderDoc);
+            string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
+            <img src="@imageSrc" class="img-responsive" style="width:100%; height:100%;" />
+        }
+
+    }
+</div>

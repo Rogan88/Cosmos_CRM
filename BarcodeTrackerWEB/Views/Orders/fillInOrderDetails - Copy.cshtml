@@ -1,0 +1,341 @@
+﻿@model BarcodeTrackerWEB.Models.OrderDetail
+
+@{
+    ViewBag.Title = "fillInOrderDetails";
+
+    int loopcount = 0;
+}
+
+<style>
+    td {
+        
+        color: #fcffb2;
+        font-size: 18px;
+    }
+
+    th{
+        font-size: 20px;
+        color: #808080;
+    }
+
+    #selectProduct {
+        width: 45%;
+        display: inline-block;
+    }
+
+    #selectQuantity {
+        width: 45%;
+        display: inline-block;
+        float: right;
+    }
+</style>
+<script src="~/Scripts/jquery-3.2.1.js"></script>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">🛍️ Add Order Item</h5>
+
+            </div>
+            <div class="modal-body">
+                <div class="form-group" id="selectProduct">
+                    <label for="ProductName">Select Product</label>
+                    <select class="form-control dropdown-toggle" name="prodId" id="prodId">
+
+                        @foreach (var item in Model.ProductList)
+                        {
+
+                            loopcount += 1;
+                            if (loopcount == Model.ProductList.Count())
+                            {
+                                break;
+                            }
+                            <option value="@item.ProductId">@item.Description</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group" id="selectQuantity">
+                    <label for="quantity">Select Quantity</label>
+                    <input class="form-control" type="number" name="quantity" id="quantity" />
+                </div>
+
+
+
+                <div>
+                    <input id="oid" type="hidden" value="@Model.OrderId" />
+                </div>
+                <br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnAddItem">Add Item</button>
+            </div>
+        </div>
+    </div>
+</div>
+<h2>Order Details</h2>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" id="myModal" data-toggle="modal" data-target="#exampleModalCenter" style="float: right;">
+    Add Items 🛒
+</button>
+<div class="well-lg">
+    <div style="display: flex;float:right;">
+
+
+        @{
+            if (Model.Order.Customer.Logo != null)
+            {
+                string imageBase64 = Convert.ToBase64String(Model.Order.Customer.Logo);
+                string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
+                <img src="@imageSrc" class="img-rounded" style="width:auto; height:auto; max-width: 200px; max-height:200px; padding: 15px;" />
+            }
+
+        }
+    </div>
+
+    
+
+    <h4>Customer Name: @Model.Order.Customer.Name.ToString()</h4>
+    <h4>Order Date: @Model.Order.OrderDate.ToShortDateString()</h4>
+    <h5>Sales Person: @Model.Order.SalesRep.FirstName @Model.Order.SalesRep.LastName</h5>
+
+
+    <div id="orderCart">
+        <table class="table table-hover table-bordered" id="myTable">
+            <thead class="text-warning">
+                <tr>
+                    <th>Item Description</th>
+                    <th>Product ID</th>
+                    <th>Quantity</th>
+                    <th>Discount</th>
+                    <th>Unit Price</th>
+                    <th>Total ex VAT</th>
+                    <th>VAT %</th>
+                    <th>Total inc VAT</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+
+                @if (Model.orderItems != null)
+                {
+                    foreach (var item in Model.orderItems)
+                    {
+                        <tr>
+                            <td>@item.Product.Description</td>
+                            <td>@item.ProductId</td>
+                            <td>@item.Quantity</td>
+                            <td>-</td>
+                            <td>@item.UnitPrice</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>Remove</td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<table class="table-bordered table-hover" style="float: right; width: 30%;">
+    <tr>
+        <td><h5>Total ex Vat: </h5></td>
+        <td><h5 id="exVatTotal" style="text-align: right"></h5></td>
+    </tr>
+    <tr>
+        <td><h5>VAT %: </h5></td>
+        <td><h5 id="vatTotal" style="text-align: right"></h5></td>
+    </tr>
+    <tr>
+        <td><h5>Total Inc Vat: </h5></td>
+        <td><h5 style="font-weight: bold; text-align: right" id="incVatTotal"></h5></td>
+    </tr>
+</table>
+<br />
+
+
+@*SCRIPT TO CALCULATE LINE ORDER ITEMS*@
+<script>
+    $("myTable").change(function(){
+        var theTotal = 0;
+        $("tr td:eq(6)").each(function () {
+            var val = $(this).text();
+            theTotal += parseInt(val);
+        });
+        $("#vatTotal").text(theTotal);
+    });
+</script>
+
+
+<script>
+    $(function () {
+        $('#Product').change(function () {
+            window.location = "Index?ProductId=" + $(this).val();
+        });
+    });
+</script>
+
+
+@*AUTO CALCULATE LINE ITEM PRICES*@
+
+<div style="clear: both">
+    <div>
+        <form method="post" novalidate>
+            @Html.AntiForgeryToken()
+            <input class="btn btn-warning btn-lg" id="saveall" type="submit" method="post" name="total" value="SAVE THE ORDER" />
+        </form>
+    </div>
+</div>
+
+<script>
+    function GetEmAll(){
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetAllOrderItems", "Orders", new { orderId = Model.OrderId })',
+            data: { "orderId" : @Model.OrderId },
+            data: "{}",
+            contentType: "application/json",
+            dataType: 'json',
+            success: function (data) {
+                //Variable that will control total order amounts.
+
+                var exVatTotal = 0;
+                var vatTotal = 0;
+                var incVatTotal = 0;
+
+                //insert html data from ajax result.
+                var trHTML = '';
+                $.each(data, function (i, data) {
+
+                    $('#tbody').empty();
+                    var unitPrice = parseFloat(data.UnitPrice).toFixed(2)
+                    var totalExVat = parseFloat(data.UnitPrice * data.Quantity).toFixed(2)
+                    var VatAmt = parseFloat((totalExVat * 14)/100).toFixed(2)
+                    var totalIncVat = parseFloat(totalExVat) + parseFloat(VatAmt)
+
+                    //apply Total Order Calculations
+                    exVatTotal += parseFloat(totalExVat)
+                    vatTotal += parseFloat(VatAmt)
+                    incVatTotal += parseFloat(totalIncVat)
+
+                    //Inserts row to order as line item.
+                    trHTML += '<tr class="orderRow"><td class="nr">' + data.Description + '</td><td class="prodId" value="'+data.ProductId+'">' + data.ProductId + '</td><td>' + data.Quantity + '</td><td></td><td>R ' + unitPrice + '</td><td>R ' + totalExVat + '</td><td>R ' + VatAmt + '</td><td>R ' + totalIncVat.toFixed(2) + '</td><td><a class="btn btn-danger" href="/Orders/DeleteOrderItem/' + data.OrderDetailsId + '">DELETE</a></td></tr>';
+
+                    $('#tbody').append(trHTML);
+                });
+
+                //TOTAL ORDER VALUES
+                $("#exVatTotal").text("R " + exVatTotal.toFixed(2));
+                $("#vatTotal").text("R " + vatTotal.toFixed(2));
+                $("#incVatTotal").text("R " + incVatTotal.toFixed(2));
+
+
+                
+                @*@Model.Order.TotalAmount = incVatTotal.toFixed(2);
+                @Html.HiddenFor(m => m.Order.TotalAmount);*@
+
+
+
+            }
+        });}
+</script>
+
+
+
+<script>
+    function deleteRow() {
+        alert($(this).attr('id'));
+    }
+</script>
+
+
+@*Script that sends ajax call to pass value from View (Modal) to Controller*@
+<script type="text/javascript">
+    $('#btnAddItem').click(function(){
+
+        var item = $('#prodId').val();
+        var quantity = $('#quantity').val();
+        var orderId = $('#oid').val();
+
+
+
+        $.ajax({
+            url: '@Url.Action("AddItemToOrderDetail")',
+            data: {'ProductId' : item, 'Quantity' : quantity, 'OrderId' : orderId },
+            type: "post",
+            cache: false,
+            success: function () {
+
+                //alert("AddedItem Successfully");
+                GetEmAll();
+                alert("GetEmAllRunning");
+                $(this).removeData('ProductId', 'Quantity', 'OrderId')
+
+                $('#exampleModalCenter').modal('hide');
+
+                $('#exampleModalCenter').on('hidden', function() {
+                    clear()
+                });
+            },
+            error: function() {
+                //alert("Error adding item")
+                GetEmAll();
+                $('#exampleModalCenter').modal('hide');
+
+                $('#exampleModalCenter').on('hidden', function() {
+                    clear()
+                });
+            }
+
+        });
+
+        $('#exampleModalCenter').on('hidden.bs.modal', function () {
+            $(this).removeData('modal');
+        })
+    });
+</script>
+
+<script>
+    //script to delete item rows from order
+    function deleteRow(){
+
+        $('.BtnRemove').click(function(){
+
+            $.ajax({
+                url: '@Url.Action("DeleteOrderItem", "Orders")',
+                data: { 'ProductId' : id },
+                type: "post",
+                cache: false,
+                success: function () {
+
+                    //alert("AddedItem Successfully");
+                    GetEmAll();
+                    alert("Deleted Successfully");
+
+                },
+                error: function() {
+                    alert("Error DELETE item")
+                    GetEmAll();
+
+                }
+            })
+
+        });
+    };
+</script>
+
+<script>
+    $(document).ready(function(){
+
+        GetEmAll();
+
+    });
+
+</script>

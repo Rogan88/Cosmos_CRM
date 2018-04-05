@@ -1,0 +1,16 @@
+﻿@model BarcodeTrackerWEB.Models.Order
+
+<style>
+    .jumbotron {
+
+    }
+</style>
+
+<div class='jumbotron'><a href='mailto: @Model.Customer.Email' class='btn btn-success' id="btnEmail">SEND INVOICE</a></div>
+
+<script>
+    $("#btnEmail").click(function () {
+
+        window.location.href = "/Orders/OrdersReadyForInvoice";
+    });
+</script>

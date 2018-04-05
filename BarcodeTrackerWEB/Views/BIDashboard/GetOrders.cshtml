@@ -1,0 +1,65 @@
+﻿@model BarcodeTrackerWEB.Models.Order
+
+@{
+    ViewBag.Title = "GetOrders";
+}
+
+
+
+<div id="myChart"></div>
+
+
+
+
+@section scripts{
+    <link href="~/Content/chartist.min.css" rel="stylesheet" />
+    <script src="~/Scripts/Chartist/chartist.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+
+
+            $.ajax({
+                type: "POST",
+                url: "BIDashboard/GetOrders",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(dbResult),
+                success: OnSuccess,
+                error: OnError
+            });
+
+            function OnSuccess(response) {
+
+                var result = response;
+                var arrayLabels = [], arraySeries = [];
+
+                $.map(result, function (item, index) {
+
+                    arrayLabels.push(item.Customer.Name);
+                    arraySeries.push(item.OrderId);
+                });
+
+
+                var data = {
+
+                    labels: arrayLabels,
+                    series: arraySeries
+                }
+
+
+                new Chartist.Pie('#myChart', data, { donut: true });
+            }
+
+            function OnError(response) {
+                alert("Error !");
+            }
+
+        });
+
+    </script>
+
+}

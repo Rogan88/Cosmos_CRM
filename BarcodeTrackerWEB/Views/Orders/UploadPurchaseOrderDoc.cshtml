@@ -1,0 +1,15 @@
+﻿@model BarcodeTrackerWEB.Models.Order
+
+<h2>Upload Purchase Order</h2>
+
+<div>
+    @* Make sure the enctype is multipart/form-data *@
+    @using (Html.BeginForm("UploadPurchaseOrderDoc", "Orders", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <p> Upload Purchase Order</p>
+        <input type="file" id="file" name="image" /><br />
+        <input type="submit" value="Upload" />
+    }
+</div>
+
+

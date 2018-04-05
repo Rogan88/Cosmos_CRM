@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "test";
+    
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+    <h2>GetOrders</h2>
+    <button type="button" onclick="loadGraph()">Load Graph</button>
+    <div class="ct-chart"></div>
+
+
+
+    <script type="text/javascript">
+        
+
+
+        $(document).ready(function () {
+
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetOrders")",
+                dataType: "json",
+
+                success: OnSuccess,
+                error: OnError
+            });
+
+            function OnSuccess(response) {
+
+                var result = response;
+                var arrayLabels = [], arraySeries = [];
+
+                $.map(result, function (item, index) {
+
+                    arrayLabels.push(item.Customer.Name);
+                    arraySeries.push(item.OrderId);
+                });
+
+
+                var data = {
+
+                    labels: arrayLabels,
+                    series: arraySeries
+                }
+
+
+
+                new Chartist.Pie('.ct-chart', data, { donut: true });
+
+            }
+
+            function OnError(response) {
+                alert("Error ! no response");
+            }
+
+        });
+        
+
+    </script>
+</body>
+</html>
+

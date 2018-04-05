@@ -1,0 +1,72 @@
+﻿@model IEnumerable<BarcodeTrackerWEB.Models.UserAccount>
+
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    body {
+        background-image: url(/Content/images/body-black.jpg);
+        background-repeat: space;
+        background-size: cover;
+    }
+
+    .jumbotron {
+        background: rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+    #userTable{
+        color: #ffffff;
+        text-align: left;
+    }
+    
+    th{
+        color: #008c54;
+        text-decoration: underline;
+    }
+    h2{
+        text-align: center;
+    }
+</style>
+
+<div class="jumbotron">
+    <h2>System Users</h2><br />
+    <table class="table table-hover" id="userTable">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+
+
+

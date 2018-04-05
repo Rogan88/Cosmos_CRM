@@ -1,0 +1,59 @@
+﻿@model BarcodeTrackerWEB.ViewModels.OrdersVM
+
+@{
+    ViewBag.Title = "OrderDetails";
+}
+
+<h3>Order Id = @Model.OrderVM.OrderId</h3>
+
+
+<h2>@Model.ProductVM.UnitPrice</h2>
+<h2>@Model.OrderDetailVM.Quantity</h2>
+<h2>@Model.ProductVM.ProductId</h2>
+<h2>@Model.ProductVM.Description</h2>
+
+@*<h2>OrderDetails</h2>
+<h4>OrderId = </h4>
+<h4>Descriptoin / Product</h4>
+<table>
+    <thead>
+        details::
+    </thead>
+    <thead>Description</thead>
+    <tr>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Description</th>
+        
+    </tr>
+    <tr>
+        <td>
+            <div class="col-md-10">
+    @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
+            </div> 
+        </td>
+        
+        
+        <td></td><td></td><td></td>
+    </tr>
+</table>*@
+<div class="panel-body" style="background-color: aqua; margin: 0 auto;">
+
+    
+
+
+</div>
+<form>
+   <select>
+       <option>@*@Model.Product.Description*@</option>
+   </select>
+</form>
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

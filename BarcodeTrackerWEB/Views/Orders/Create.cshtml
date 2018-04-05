@@ -1,0 +1,122 @@
+﻿@model BarcodeTrackerWEB.Models.Order
+
+@{
+    ViewBag.Title = "Create";
+}
+<style>
+    body{
+        background-image: url(/Content/images/body-black.jpg);
+    }
+</style>
+<head>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+</head>
+<h2>Create</h2>
+@*<div>
+    <a href="/Orders/UploadPurchaseOrderDoc/@Model.OrderId" class="btn btn-default" style="width:100%;">UPLOAD PO</a><br /><br />
+</div>*@
+@using (Html.BeginForm(new { id = "orderForm" }))
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="well">
+                <h4>Customer Details</h4>
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CustomerId, "Customer Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("CustomerId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SaleRepId, "Sale Rep", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("SaleRepId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.SaleRepId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                            @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PurchaseOrderNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.PurchaseOrderNumber, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PurchaseOrderNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-3 sidenav hidden-xs">
+            
+            <div class="well">
+                <div>
+                    @* Make sure the enctype is multipart/form-data *@
+                    @using (Html.BeginForm("UploadPurchaseOrderDoc", "Orders", FormMethod.Post, new { enctype = "multipart/form-data", id = "po_file" }))
+                    {
+                        <p> Upload Purchase Order</p>
+
+                        <input type="file" id="po_file" name="po_file" /><br />
+                    }
+                </div>
+
+                <div>
+                    @* Make sure the enctype is multipart/form-data *@
+                    @using (Html.BeginForm("UploadLabelProofDoc", "Orders", FormMethod.Post, new { enctype = "multipart/form-data", id = "proof_file" }))
+                    {
+                        <p> Upload Label Proof</p>
+                        <input type="file" id="proof_file" name="proof_file" />
+                        @*<input type="submit" value="upload" />*@
+                    }
+                </div>
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-warning" onclick="$('#poDoc').submit(), $('#labelDoc').submit()" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".datepicker").datepicker();
+    });
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/jquery-ui.min.js")
+
+
+}
