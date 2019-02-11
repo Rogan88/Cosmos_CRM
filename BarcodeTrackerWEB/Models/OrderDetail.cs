@@ -19,7 +19,9 @@ namespace BarcodeTrackerWEB.Models
 
         public int Quantity { get; set; }
 
-        [Column(TypeName = "money")]
+        [Range(1, 100)]
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal")]
         public decimal UnitPrice { get; set; }
 
         public int Discount { get; set; }

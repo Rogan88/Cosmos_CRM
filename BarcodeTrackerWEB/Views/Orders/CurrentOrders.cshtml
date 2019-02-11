@@ -1,0 +1,53 @@
+﻿@model BarcodeTrackerWEB.ViewModels.BIDashboardVM
+
+
+
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+
+
+<div class="col-lg-8 col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            ORDERS IN PROGRESS
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <table id="orderProgress" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>OrderId</th>
+                        <th>Customer Name</th>
+                        <th>Customer Province</th>
+                        <th>Order Value</th>
+                        <th>Sales Rep</th>
+                        <th>Go To Order</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.panel-body -->
+    </div>
+</div>
+
+
+<script>
+
+
+ //Order Progress Table
+            function OrderProg() {
+
+
+                $('#orderProgress').dataTable({
+                    bProcessing: true,
+                    sAjaxSource: '@Url.Action("GetOrdersInProgress", "BIDashboard")',
+                    "decimalPlaces": 2,
+                    });
+    }
+
+</script>
+

@@ -37,8 +37,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.UnitPrice, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.UnitPrice, new { htmlAttributes = new { @type = "money", @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "money" })
+                @Html.EditorFor(model => model.UnitPrice, new { htmlAttributes = new { @type = "decimal", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "decimal" })
             </div>
         </div>
 

@@ -120,23 +120,27 @@
 <div id="page-wrapper">
     <div>
     </div>
-    
+
     <div class="row">
         <div class="col-lg-12">
 
             <div class="page-header">
-                
+
                 <div style="color: #141414;background-image: url(/Content/images/BI.png); background-size: contain; background-repeat:no-repeat; width: 400px; height: 200px; float: right">
-                    
+
                 </div>
                 <h1 style="color: #141414;">Dashboard</h1>
                 <p>Company Data Analytics</p>
             </div>
-            
-            
+
+
         </div>
         <!-- /.col-lg-12 -->
     </div>
+
+   
+
+
     <!-- /.row -->
     <div class="row">
         <div class="col-lg-4 col-md-6" id="PieChart1">
@@ -244,11 +248,11 @@
                     {
                         TotalSales += (item.TotalAmount * 115 / 100);
                     }
-                    <br /><br />                    <br /><br />
+                    <br /><br /> <br /><br />
                     <h5 style="color: #000000; float: left">Total Sales Revenue: </h5>
                     <span class="btn btn-default btn-lg" style="float: right;color: #cfffd6">R @TotalSales.ToString("0,000.00")</span>
                     <br /><br /><br /><br />
-                    <h5 style="color: #000000; clear: both; float: left;">Total Order Count: </h5>                    
+                    <h5 style="color: #000000; clear: both; float: left;">Total Order Count: </h5>
                     <span class="btn btn-default btn-lg" style="float: right;color: #ffc6a7">@Model.allOrderList.Count().ToString()</span>
                     <br /><br /><br /><br />
                     <h5 style="color: #000000; clear: both; float: left;">Total Customers </h5>
@@ -258,7 +262,7 @@
 
                 }
 
-</div>
+            </div>
         </div>
     </div>
 
@@ -304,28 +308,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-8 col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    ORDERS IN PROGRESS
-                </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
-                    <table id="orderProgress" class="table table-bordered table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>OrderId</th>
-                                <th>Customer Name</th>
-                                <th>Customer Province</th>
-                                <th>Order Value</th>
-                                <th>Sales Rep</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                <!-- /.panel-body -->
-            </div>
-        </div>
+
 
 
     </div>

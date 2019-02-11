@@ -6,6 +6,21 @@ namespace BarcodeTrackerWEB.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
+
+    public enum ProvinceName
+    {
+        Gauteng,
+        Limpopo,
+        Mpumalanga,
+        North_West,
+        Western_Cape,
+        Eastern_Cape,
+        Northern_Cape,
+        KwazuluNatal,
+        Free_State,
+
+    }
+
     public partial class Customer
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -26,18 +41,16 @@ namespace BarcodeTrackerWEB.Models
 
         public byte[] Logo { get; set; }
 
-        [Column(TypeName = "numeric")]
-        public decimal Phone { get; set; }
+        public string Phone { get; set; }
 
         [EmailAddress]
         [StringLength(50)]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(20)]
-        public string Province { get; set; }
+        //[Required]
+        //[StringLength(20)]
+        public ProvinceName Province { get; set; }
 
-        [Required]
         [StringLength(100)]
         public string BillingAddress { get; set; }
 

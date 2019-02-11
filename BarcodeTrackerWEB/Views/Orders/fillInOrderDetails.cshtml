@@ -1,4 +1,4 @@
-﻿@model BarcodeTrackerWEB.ViewModels.OrderDetailVM   
+﻿@model BarcodeTrackerWEB.ViewModels.OrderDetailVM
 
 @{
     ViewBag.Title = "fillInOrderDetails";
@@ -12,18 +12,15 @@
     }
 
     #transbody {
-        
         background: rgba(0, 0, 0, 0.8);
-    
     }
 
     td {
-        
         color: #ffffff;
         font-size: 18px;
     }
 
-    th{
+    th {
         font-size: 20px;
         color: #808080;
     }
@@ -81,14 +78,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.startSequence, htmlAttributes: new {  @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.startSequence, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.startSequence, new { htmlAttributes = new { id = "startSequence", @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.startSequence, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="form-group" >
-                    @Html.LabelFor(model => model.barcodeSuffix, htmlAttributes: new {  @class = "control-label col-md-2" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.barcodeSuffix, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.barcodeSuffix, new { htmlAttributes = new { id = "barSuffix", @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.barcodeSuffix, "", new { @class = "text-danger" })
@@ -117,16 +114,19 @@
     <div class="well-lg">
         <div style="display: flex;float:right;">
 
-
             @{
-                if (Model.Order.Customer.Logo != null)
-                {
-                    string imageBase64 = Convert.ToBase64String(Model.Order.Customer.Logo);
-                    string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
-                    <img src="@imageSrc" class="img-rounded" style="width:auto; height:auto; max-width: 200px; max-height:200px; padding: 15px;" />
+
+                        if (Model.Order.Customer.Logo != null)
+                            {
+                                string imageBase64 = Convert.ToBase64String(Model.Order.Customer.Logo);
+                                string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
+                                <img src="@imageSrc" class="img-rounded" style="width:auto; height:auto; max-width: 200px; max-height:200px; padding: 15px;" />
+                    }
                 }
 
-            }
+
+
+
         </div>
 
 
@@ -195,7 +195,7 @@
 
     @*SCRIPT TO CALCULATE LINE ORDER ITEMS*@
     <script>
-        $("myTable").change(function(){
+        $("myTable").change(function () {
             var theTotal = 0;
             $("tr td:eq(6)").each(function () {
                 var val = $(this).text();
@@ -252,12 +252,17 @@
                     var VatAmt = parseFloat((totalExVat * 15)/100).toFixed(2)
                     var totalIncVat = parseFloat(totalExVat) + parseFloat(VatAmt)
 
-                    if (data.barcodeSuffix == null) {
-                        var sequenceRange = data.barcodePrefix + data.startSequence + " - " + data.barcodePrefix + data.endSequence;
-                    } else {
+                    if (data.barcodeSuffix == null && data.barcodePrefix == null) {
+                        var sequenceRange = data.startSequence + " - "  + data.endSequence;
+                    } else if (data.barcodePrefix == null && data.barcodeSuffix != null) {
+                        var sequenceRange = data.startSequence + data.barcodeSuffix + " - "  + data.endSequence + data.barcodeSuffix;
+                    } else if (data.barcodePrefix != null && data.barcodeSuffix == null) {
+                        var sequenceRange = data.barcodePrefix + data.startSequence + " - "  + data.barcodePrefix + data.endSequence;
+                    }
+                    else {
                         var sequenceRange = data.barcodePrefix + data.startSequence + data.barcodeSuffix + " - " + data.barcodePrefix + data.endSequence + data.barcodeSuffix;
                     }
-                    
+
                     var item = data.Description;
                     //apply Total Order Calculations
                     exVatTotal += parseFloat(totalExVat)
@@ -276,7 +281,7 @@
                 $("#incVatTotal").text("R " + incVatTotal.toFixed(2));
 
 
-                
+
                 @*@Model.Order.TotalAmount = incVatTotal.toFixed(2);
                 @Html.HiddenFor(m => m.Order.TotalAmount);*@
 
@@ -374,7 +379,7 @@
 </script>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         GetEmAll();
 

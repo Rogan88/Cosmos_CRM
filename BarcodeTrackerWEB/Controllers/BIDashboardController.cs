@@ -324,7 +324,7 @@ namespace BarcodeTrackerWEB.Controllers
                                         Logo = c.Logo,
                                         CustomerName = c.Name,
                                         CustomerId = c.CustomerId,
-                                        CustomerProvince = c.Province,
+                                        CustomerProvince = c.Province.ToString(),
                                         CountOrder = o.Count,
                                         TotalValue = db.Orders.GroupBy(x => x.CustomerId)
     .Select(n => n.Sum(m => m.TotalAmount)).FirstOrDefault().ToString()
@@ -458,7 +458,8 @@ namespace BarcodeTrackerWEB.Controllers
                 return Json(new
                 {
 
-                    aaData = ordersInProgress.Select(x => new object[] { x.OrderId, x.Customer.Name, x.Customer.Province, "R " + x.TotalAmount.ToString("0.00"), x.SalesRep.FirstName + " " + x.SalesRep.LastName})
+                    aaData = ordersInProgress.Select(x => new object[] { x.OrderId, x.Customer.Name, x.Customer.Province, "R " + x.TotalAmount.ToString("0.00"), x.SalesRep.FirstName + " " + x.SalesRep.LastName, "<a href='Orders/fillInOrderDetails?orderId="
+                                  + x.OrderId + "'>Go To Order</a>"})
 
                 }, JsonRequestBehavior.AllowGet);
                 

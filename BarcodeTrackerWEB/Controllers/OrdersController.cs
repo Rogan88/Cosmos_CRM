@@ -12,8 +12,6 @@ using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
-using iTextSharp.text.html.simpleparser;
-using Newtonsoft.Json;
 
 namespace BarcodeTrackerWEB.Controllers
 {
@@ -26,7 +24,7 @@ namespace BarcodeTrackerWEB.Controllers
         {
             using (MainContext db = new MainContext())
             {
-                return View(db.Orders.ToList());//
+                return View(db.Orders.ToList());
             }
         }
 
@@ -46,7 +44,38 @@ namespace BarcodeTrackerWEB.Controllers
             }
         }
 
+        //Display current running orders
+        public ActionResult CurrentOrders()
+        {
+            MainContext db = new MainContext();
+            {
+                var data = db.Orders.ToList();
 
+                List<Order> ordersInProgress = new List<Order>();
+
+
+                foreach (var item in data)
+                {
+
+                    if (item.Status == 3)
+                    {
+                        ordersInProgress.Add(item);
+                    }
+
+                }
+
+
+
+                return Json(new
+                {
+
+                    aaData = ordersInProgress.Select(x => new object[] { x.OrderId, x.Customer.Name, x.Customer.Province, "R " + x.TotalAmount.ToString("0.00"), x.SalesRep.FirstName + " " + x.SalesRep.LastName, "<a href='Orders/fillInOrderDetails?orderId="
+                                  + x.OrderId + "'>Go To Order</a>"})
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+        }
         //public ActionResult OrderDetails(int? oid, int? cid, int? sid, int? pid)
         public ActionResult OrderDetails(int? oid, int? cid, int? sid)
         {
@@ -93,8 +122,6 @@ namespace BarcodeTrackerWEB.Controllers
 
                 int ss = Int32.Parse(startSequence);
 
-
-
                 String.Format("sequenceLen");
 
                 //Barcode Sequence Validation - Used to check existing barcodes sequences to prevent duplication errors ---
@@ -113,16 +140,22 @@ namespace BarcodeTrackerWEB.Controllers
                 foreach (var order in listOfOrders)
                 {
                     var detail = db.OrderDetails.Find(order.OrderId);
-                    int existingSequece = Int32.Parse(detail.endSequence);
 
-                    if (ss > existingSequece)
+                    if (detail != null)
                     {
-                        validSequence = true;
+                        int existingSequece = Int32.Parse(detail.endSequence);
+                        if (ss > existingSequece)
+                        {
+                            validSequence = true;
+                        }
                     }
+                    else validSequence = true;
+
+
                 }
 
-                //if (validSequence == true)
-                //{
+                if (validSequence == true)
+                {
 
 
                     OrderDetail o = new OrderDetail();
@@ -150,27 +183,21 @@ namespace BarcodeTrackerWEB.Controllers
                     o.barcodeSuffix = o.barcodeSuffix;
                     o.startSequence = startSequence;
 
-
-
-
                     var sequenceSize = new string('0', startSequence.Length);
-
 
                     o.endSequence = es.ToString(sequenceSize);
 
                     db.OrderDetails.Add(o);
                     db.SaveChanges();
+                }
 
-                
                 return View();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
             }
-
-
         }
 
         // GET: Orders/Delete/5
@@ -185,20 +212,10 @@ namespace BarcodeTrackerWEB.Controllers
                        where d.OrderDetailsId == id
                        select d.OrderId).SingleOrDefault();
 
-
             var row = db.OrderDetails.Find(id);
-
-            //if (row.orderItems.Where(i => i.OrderDetailsId) = id;)
-            //{
-
-            //}
 
             db.OrderDetails.Remove(row);
             db.SaveChanges();
-
-
-
-
 
             return RedirectToAction("fillInOrderDetails", new { orderId = oid });
 
@@ -209,8 +226,6 @@ namespace BarcodeTrackerWEB.Controllers
         [HttpGet]
         public JsonResult GetAllOrderItems(int orderId)
         {
-
-
 
             var lineItems =
             (
@@ -230,12 +245,9 @@ namespace BarcodeTrackerWEB.Controllers
 
                 });
 
-
             return Json(lineItems, JsonRequestBehavior.AllowGet);
 
         }
-
-
 
 
         //Step 2: Order Details
@@ -248,7 +260,7 @@ namespace BarcodeTrackerWEB.Controllers
             od.Order = order;
             od.OrderId = orderId;
 
-
+            var customer = db.Customers.Find(order.CustomerId);
 
             foreach (Product p in db.Products)
             {
@@ -260,6 +272,8 @@ namespace BarcodeTrackerWEB.Controllers
 
             od.OrderDetailsId = orderId;
             od.ProductList = products;
+            od.Customer = customer;
+
             db.SaveChanges();
 
             return View(od);
@@ -481,7 +495,7 @@ namespace BarcodeTrackerWEB.Controllers
                     {
                         item.Status = 3;
                         item.StatusName = "💸 Ready for Invoice";
-                    } 
+                    }
                     else
                     {
                         item.Status = 0;
@@ -497,34 +511,16 @@ namespace BarcodeTrackerWEB.Controllers
                 return Json(new
                 {
 
-                    aaData = data.Select(x => new object[] { x.Customer.Name, x.SalesRep.FirstName, x.OrderDate.ToShortDateString(), x.PurchaseOrderNumber, "R " + (x.TotalAmount*114/100).ToString("0.00"), x.StatusName, "<a style='color: orange;' href='Edit/"
+                    aaData = data.Select(x => new object[] { x.Customer.Name, x.SalesRep.FirstName, x.OrderDate.ToShortDateString(), x.PurchaseOrderNumber, x.PurchaseOrderDate.ToShortDateString(), "R " + (x.TotalAmount*114/100).ToString("0.00"), x.StatusName, "<a style='color: orange;' href='Edit/"
                                   + x.OrderId + "'>Edit</a>", "<a style='color: red;' href='Delete/"
                                   + x.OrderId + "'>Delete</a>", "<a style='color: blue;' href='fillInOrderDetails?orderId="
-                                  + x.OrderId + "'>Details</a>", "<a href='/Orders/UploadPurchaseOrderDoc/" + x.OrderId + "' class='btn btn-default' style='width:100%;'>Attach</a>",
-                    "<a href='/Orders/UploadProofDoc/" + x.OrderId + "' class='btn btn-default' style='width:100%;'>Attach</a>"})
+                                  + x.OrderId + "'>Details</a>", "<a href='/Orders/UploadPurchaseOrderDoc/" + x.OrderId + "' class='btn btn-default' style='width:50%;'>Attach</a>" + "<a href='/Orders/ViewPO/" + x.OrderId + "' class='btn btn-default' style='width:30%;'>👁️</a>",
+                    "<a href='/Orders/UploadProofDoc/" + x.OrderId + "' class='btn btn-default' style='width:50%;'>Attach</a>" + "<a href='/Orders/ViewLabelProof/" + x.OrderId + "' class='btn btn-default' style='width:30%;'>👁️</a>"})
 
                 }, JsonRequestBehavior.AllowGet);
 
-
-
-
-
-
-
-
-                //var data = db.Orders.Include(o => o.Customer).Include(o => o.SalesRep).ToList();
-
-                //return Json(new { data = data }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
-        // GET: Orders
-        //public ActionResult Index()
-        //{
-        //    var orders = db.Orders.Include(o => o.Customer).Include(o => o.SalesRep);
-        //    return View(orders.ToList());
-        //}
 
         // GET: Orders/Details/5
         public ActionResult Details(int? id)
@@ -562,82 +558,112 @@ namespace BarcodeTrackerWEB.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CustomerId,SaleRepId,OrderDate,PurchaseOrderNumber,Status")] Models.Order order)
+        public ActionResult Create([Bind(Include = "CustomerId,SaleRepId,OrderDate,PurchaseOrderNumber,PurchaseOrderDate,Status")] Order order)
         {
-            if (ModelState.IsValid)
+
+            using (MainContext db = new MainContext())
             {
-                if (order.PurchaseOrderDoc != null)
+
+                var errors = ModelState
+        .Where(x => x.Value.Errors.Count > 0)
+        .Select(x => new { x.Key, x.Value.Errors })
+        .ToArray();
+
+                if (ModelState.IsValid)
                 {
-                    order.Status = 1;
-
-                    if (order.SignedLabelProofDoc != null)
+                    if (order.PurchaseOrderDoc != null)
                     {
-                        order.Status = 2;
+                        order.Status = 1;
+
+                        if (order.SignedLabelProofDoc != null)
+                        {
+                            order.Status = 2;
+                        }
+                        else
+                        {
+                            order.Status = 0;
+                        }
                     }
-                    else
+
+                    switch (order.Status)
                     {
-                        order.Status = 0;
+                        case 0:
+                            {
+                                order.StatusName = "⌛️ Pending";
+                                break;
+                            }
+
+                        case 1:
+                            {
+                                order.StatusName = "Need Label Proof";
+                                break;
+                            }
+
+                        case 2:
+                            {
+                                order.StatusName = "In Progress";
+                                break;
+                            }
+
+                        case 3:
+                            {
+                                order.StatusName = "Ready For Invoice";
+                                break;
+                            }
+
+                        case 4:
+                            {
+                                order.StatusName = "Complete";
+                                break;
+                            }
+
+                        default:
+                            {
+                                break;
+                            }
                     }
+
+
+
                 }
-
-                switch (order.Status)
-                {
-                    case 0:
-                        {
-                            order.StatusName = "⌛️ Pending";
-                            break;
-                        }
-
-                    case 1:
-                        {
-                            order.StatusName = "Need Label Proof";
-                            break;
-                        }
-
-                    case 2:
-                        {
-                            order.StatusName = "In Progress";
-                            break;
-                        }
-
-                    case 3:
-                        {
-                            order.StatusName = "Ready For Invoice";
-                            break;
-                        }
-
-                    case 4:
-                        {
-                            order.StatusName = "Complete";
-                            break;
-                        }
-
-                    default:
-                        {
-                            break;
-                        }
-                }
-
-
 
                 db.Orders.Add(order);
                 db.SaveChanges();
 
+
+                if (db.Orders.Count() == 0)
+                {
+                    var latestId = 1;
+                    int? a = 0;
+
+                    var z = a == 0 ? 1 : 2;
+
+                    ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", order.CustomerId);
+                    ViewBag.SaleRepId = new SelectList(db.SalesReps, "SalesRepId", "FirstName", order.SaleRepId);
+
+                    var x = $"customerID = {order.CustomerId}, salesRepID = {order.SaleRepId}";
+
+                    //int? oid, int? cid, int? sid, int? pid
+
+                    return RedirectToAction("fillInOrderDetails", new { orderId = latestId });
+                }
+                else
+                {
+                    var latestId = db.Orders.Max(p => p.OrderId);
+                    int? a = 0;
+
+                    var z = a == 0 ? 1 : 2;
+
+                    ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", order.CustomerId);
+                    ViewBag.SaleRepId = new SelectList(db.SalesReps, "SalesRepId", "FirstName", order.SaleRepId);
+
+                    var x = $"customerID = {order.CustomerId}, salesRepID = {order.SaleRepId}";
+
+                    //int? oid, int? cid, int? sid, int? pid
+                    return RedirectToAction("fillInOrderDetails", new { orderId = latestId });
+                }
             }
 
-            var latestId = db.Orders.Max(p => p.OrderId);
-            int? a = 0;
-
-            var z = a == 0 ? 1 : 2;
-
-
-            ViewBag.CustomerId = new SelectList(db.Customers, "CustomerId", "Name", order.CustomerId);
-            ViewBag.SaleRepId = new SelectList(db.SalesReps, "SalesRepId", "FirstName", order.SaleRepId);
-
-            var x = $"customerID = {order.CustomerId}, salesRepID = {order.SaleRepId}";
-
-            //int? oid, int? cid, int? sid, int? pid
-            return RedirectToAction("fillInOrderDetails", new { orderId = latestId });
 
         }
         // GET: Orders/Edit/5
@@ -718,16 +744,6 @@ namespace BarcodeTrackerWEB.Controllers
             return RedirectToAction("showAllOrders");
 
         }
-
-        //protected override void Dispose(bool disposing)
-        //{
-        //    if (disposing)
-        //    {
-        //        db.Dispose();
-        //    }
-        //    base.Dispose(disposing);
-        //}
-
 
         public ActionResult UploadPurchaseOrderDoc(int id)
         {
@@ -814,9 +830,22 @@ namespace BarcodeTrackerWEB.Controllers
             //search for the order where orderId equals id
             var order = db.Orders.Find(id);
 
-            return View(order);
+            var po = order.PurchaseOrderDoc;
+
+            return File(po, "application/pdf");
 
         }
+        public ActionResult ViewLabelProof(int id)
+        {
+            //search for the order where orderId equals id
+            var order = db.Orders.Find(id);
+
+            var lpd = order.SignedLabelProofDoc;
+
+            return File(lpd, "application/pdf");
+
+        }
+
 
         public ActionResult emailInvoice(int id)
         {
@@ -865,18 +894,6 @@ namespace BarcodeTrackerWEB.Controllers
             odVM.OrderDetailsId = oid;
             odVM.OrderId = oid;
 
-            //if (db.Products != null)
-            //{
-            //    foreach (Product p in db.Products)
-            //    {
-
-            //        odVM.ProductList.Add(p);
-            //    }
-            //}
-
-
-
-
             return View(odVM);
 
         }
@@ -901,12 +918,86 @@ namespace BarcodeTrackerWEB.Controllers
 
                 db.SaveChanges();
 
-
             }
-
             return View();
 
         }
+
+
+        #region Sequences    
+
+        public ActionResult Sequences()
+        {
+
+            List<OrderDetail> sequences = new List<OrderDetail>();
+
+            List<Customer> customers = new List<Customer>();
+
+
+            using (var context = new MainContext())
+            {
+
+            
+            
+                
+
+                
+
+                foreach (var orderDetail in context.OrderDetails)
+                {
+                    //get customer Name for last order
+                    var ClientOrder = context.Orders.Where(c => c.OrderId == orderDetail.OrderId);
+
+                    
+                    customers.Add(ClientOrder.Select(c => c.Customer).First());
+
+                    var ClientSequence = context.OrderDetails.Where(c => c.OrderId == orderDetail.OrderId).First();
+                    sequences.Add(ClientSequence);
+
+                }
+
+            }
+
+                SequenceViewModel seqVM = new SequenceViewModel();
+
+                foreach (var customer in customers)
+                {
+
+                    var cId = customer.CustomerId;
+                    var cName = customer.Name;
+                    var cVM = new CustomerVM();
+                    cVM.customerId = cId;
+                    cVM.customerName = cName;
+
+                    seqVM.Customer.Add(cVM);
+
+                }
+
+                foreach (var orderDetail in sequences)
+                {
+                    var oId = orderDetail.OrderId;
+                    var bPrefix = orderDetail.barcodePrefix;
+                    var bStartSequence = orderDetail.startSequence;
+                    var bSuffix = orderDetail.barcodeSuffix;
+                    var bEndSequence = orderDetail.endSequence;
+
+                    var odVM = new OrderDetailVM();
+                    odVM.OrderId = oId;
+                    odVM.barcodePrefix = bPrefix;
+                    odVM.startSequence = bStartSequence;
+                    odVM.barcodeSuffix = bSuffix;
+                    odVM.endSequence = bEndSequence;
+
+                    seqVM.OrderDetails.Add(odVM);
+
+                }
+
+
+                return View(seqVM);
+            
+        }
+
+        #endregion
 
 
     }

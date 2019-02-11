@@ -21,11 +21,14 @@ namespace BarcodeTrackerWEB.Models
 
         public int SaleRepId { get; set; }
 
-        [Column(TypeName = "date")]
+        [Column(TypeName = "DateTime2")]
         public DateTime OrderDate { get; set; }
         
         [StringLength(10)]
         public string PurchaseOrderNumber { get; set; }
+
+        [Column(TypeName = "DateTime2")]
+        public DateTime PurchaseOrderDate { get; set; }
 
         [Column(TypeName = "money")]
         public decimal TotalAmount { get; set; }

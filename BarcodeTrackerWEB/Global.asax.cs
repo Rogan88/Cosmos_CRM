@@ -18,8 +18,10 @@ namespace BarcodeTrackerWEB
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            
-            
+
+            //Handles decimal input for prices
+            ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
+
 
             HttpConfiguration config = GlobalConfiguration.Configuration;
 
